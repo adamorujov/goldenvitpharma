@@ -28,7 +28,23 @@ SECRET_KEY = 'django-insecure-(bwc&&)cbnyxjx&2s1(1g24h-my(zxrv%hf6(x8_k88q*mb8b8
 DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
-
+# ALLOWED_HOSTS = [
+#     'admin.goldenvitpharma.com',
+#     'www.admin.goldenvitpharma.com',
+#     'http://admin.goldenvitpharma.com',
+#     'http://www.admin.goldenvitpharma.com',
+#     'https://admin.goldenvitpharma.com',
+#     'https://www.admin.goldenvitpharma.com'
+# ]
+# CORS_ALLOWED_ORIGINS = [
+#     'goldenvitpharma.com',
+#     'www.goldenvitpharma.com',
+#     'http://goldenvitpharma.com',
+#     'http://www.goldenvitpharma.com',
+#     'https://goldenvitpharma.com',
+#     'https://www.goldenvitpharma.com',
+# ]
+CORS_ALLOW_ALL_ORIGINS = True
 
 # Application definition
 
@@ -44,9 +60,11 @@ INSTALLED_APPS = [
     'tinymce',
     'rest_framework',
     'rest_framework_simplejwt',
+    "corsheaders"
 ]
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',
