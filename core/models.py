@@ -210,6 +210,7 @@ class Product(models.Model):
     discount_percentage = models.FloatField(default=0)
     discount_price = models.FloatField(default=0)
     is_stock = models.BooleanField(default=True)
+    is_bestseller = models.BooleanField(default=False)
 
     # meta
     meta_description = models.TextField(blank=True, null=True)
@@ -230,7 +231,7 @@ class ProductImage(models.Model):
         ordering = ("-id",)
 
     def __str__(self):
-        return self.product.name + " " + (self.id)
+        return self.product.name + " " + str(self.id)
     
 class Comment(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, related_name="user_comments", blank=True, null=True)
