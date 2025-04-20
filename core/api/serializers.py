@@ -77,6 +77,7 @@ class CommentSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 class ProductSerializer(serializers.ModelSerializer):
+    category = serializers.SlugRelatedField(queryset=Category.objects.all(), slug_field='title')
     images = ProductImageSerializer(many=True)
     product_comments = CommentSerializer(many=True)
     class Meta:
