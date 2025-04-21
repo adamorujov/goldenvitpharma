@@ -4,7 +4,7 @@ from core.models import (
     ProductImage, Comment, Favorite, Contact, Message, BasketItem, Promocode, Order, OrderItem
 )
 from core.api.serializers import (
-    UserCreateSerializer, SiteSettingsSerializer, BannerSerializer, ServiceSerializer, BlogSerializer, 
+    UserCreateSerializer, UserSerializer, SiteSettingsSerializer, BannerSerializer, ServiceSerializer, BlogSerializer, 
     TestimonialSerializer, CategorySerializer, SubCategorySerializer, ProductSerializer,
     ProductImageSerializer, CommentSerializer, FavoriteSerializer, FavoriteCreateSerializer, ContactSerializer, MessageSerializer, 
     BasketItemSerializer, BasketItemCreateSerializer, PromoCodeSerializer, OrderSerializer, OrderCreateSerializer, OrderItemSerializer
@@ -15,6 +15,11 @@ from rest_framework.permissions import IsAuthenticated
 class UserCreateAPIView(CreateAPIView):
     queryset = CustomUser.objects.all()
     serializer_class = UserCreateSerializer
+
+class UserRetrieveAPIView(RetrieveAPIView):
+    queryset = CustomUser.objects.all()
+    serializer_class = UserSerializer
+    lookup_field = "email"
 
 class SiteSettingsAPIView(ListAPIView):
     queryset = SiteSettings.objects.all()

@@ -28,6 +28,11 @@ class UserCreateSerializer(serializers.ModelSerializer):
         account.save()
         return account
     
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        exclude = ('password',)
+    
 
 class SiteSettingsSerializer(serializers.ModelSerializer):
     class Meta:

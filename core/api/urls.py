@@ -3,6 +3,7 @@ from core.api import views
 
 urlpatterns = [
     path('user-create/', views.UserCreateAPIView.as_view(), name="user-create"),
+    path('user-retrieve/<email>/', views.UserRetrieveAPIView.as_view(), name="user-retrieve"),
     path('settings/', views.SiteSettingsAPIView.as_view(), name="settings"),
     path('banner-list/', views.BannerListAPIView.as_view(), name="banner-list"),
     path('service-list/', views.ServiceListAPIView.as_view(), name="service-list"),
