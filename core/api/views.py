@@ -97,12 +97,13 @@ class BasketItemCreateAPIView(CreateAPIView):
     permission_classes = (IsOwner,)
 
     def perform_create(self, serializer):
+        user = serializer.validated_data['user']
         product = serializer.validated_data['product']
         quantity = serializer.validated_data.get('quantity', 1)
 
         # Try to get existing BasketItem
         basket_item, created = BasketItem.objects.get_or_create(
-            user=self.request.user,
+            user=user,
             product=product,
             defaults={'quantity': quantity}
         )
