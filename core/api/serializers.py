@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from core.models import (
     CustomUser, SiteSettings, Banner, Service, Blog, Testimonial, Category, SubCategory, Product,
-    ProductImage, Comment, Favorite, Contact, Message, BasketItem, Promocode, Order, OrderItem
+    ProductImage, Comment, Favorite, Contact, Message, BasketItem, Promocode, Order, OrderItem, ChatBot
 )
 from django.contrib.auth.password_validation import validate_password
 
@@ -144,3 +144,7 @@ class OrderCreateSerializer(serializers.ModelSerializer):
         model = Order
         fields = "__all__"
 
+class ChatBotSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ChatBot
+        fields = "__all__"

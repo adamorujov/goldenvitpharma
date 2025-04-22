@@ -20,10 +20,15 @@ urlpatterns = [
     path('contact-list/', views.ContactListAPIView.as_view(), name="contact-list"),
     path('message-create/', views.MessageCreateAPIView.as_view(), name="message-create"),
     path('basketitem-create/', views.BasketItemCreateAPIView.as_view(), name="basketitem-create"),
+    path('basketitem-update-delete/<id>/', views.BasketItemRetrieveUpdateDestroyAPIView.as_view(), name="basketitem-update-delete"),
     path('user-basketitem-list/<email>/', views.UserBasketItemListAPIView.as_view(), name="user-basketitem-list"),
     path('promocode-list/', views.PromocodeListAPIView.as_view(), name="promocode-list"),
     path('user-order-list/<email>/', views.UserOrderListAPIView.as_view(), name="user-order-list"),
     path('order-create/', views.OrderCreateAPIView.as_view(), name="order-create"),
     path('order-retrieve-update/<int:id>/', views.OrderRetrieveUpdateAPIView.as_view(), name="order-retrive-update"),
     path('order-item-create/', views.OrderItemCreateAPIView.as_view(), name="order-item-create"),
+    path('chatbot-list/', views.ChatBotListAPIView.as_view(), name="chatbot-list"),
+    path('chatbot-retrieve/<int:id>/', views.ChatBotRetrieveAPIView.as_view(), name="chatbot-retrieve"),
+
+    path('auth/google/', views.GoogleLogin.as_view(), name='google_login'),
 ]

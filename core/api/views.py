@@ -1,16 +1,18 @@
-from rest_framework.generics import ListAPIView, CreateAPIView, RetrieveAPIView, RetrieveUpdateAPIView
+from rest_framework.generics import ListAPIView, CreateAPIView, RetrieveAPIView, RetrieveUpdateAPIView, DestroyAPIView, RetrieveUpdateDestroyAPIView
 from core.models import (
     CustomUser, SiteSettings, Banner, Service, Blog, Testimonial, Category, SubCategory, Product,
-    ProductImage, Comment, Favorite, Contact, Message, BasketItem, Promocode, Order, OrderItem
+    ProductImage, Comment, Favorite, Contact, Message, BasketItem, Promocode, Order, OrderItem, ChatBot
 )
 from core.api.serializers import (
     UserCreateSerializer, UserSerializer, SiteSettingsSerializer, BannerSerializer, ServiceSerializer, BlogSerializer, 
     TestimonialSerializer, CategorySerializer, SubCategorySerializer, ProductSerializer,
     ProductImageSerializer, CommentSerializer, FavoriteSerializer, FavoriteCreateSerializer, ContactSerializer, MessageSerializer, 
-    BasketItemSerializer, BasketItemCreateSerializer, PromoCodeSerializer, OrderSerializer, OrderCreateSerializer, OrderItemSerializer
+    BasketItemSerializer, BasketItemCreateSerializer, PromoCodeSerializer, OrderSerializer, OrderCreateSerializer, OrderItemSerializer, ChatBotSerializer
 )
 from core.api.permissions import IsOwner
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework import status
 
 class UserCreateAPIView(CreateAPIView):
     queryset = CustomUser.objects.all()
@@ -94,6 +96,38 @@ class BasketItemCreateAPIView(CreateAPIView):
     serializer_class = BasketItemCreateSerializer
     permission_classes = (IsOwner,)
 
+    def perform_create(self, serializer):
+        product = serializer.validated_data['product']
+        quantity = serializer.validated_data.get('quantity', 1)
+
+        # Try to get existing BasketItem
+        basket_item, created = BasketItem.objects.get_or_create(
+            user=self.request.user,
+            product=product,
+            defaults={'quantity': quantity}
+        )
+
+        if not created:
+            basket_item.quantity += quantity
+            basket_item.save()
+
+        self.instance = basket_item  # So `.get_success_headers()` works properly
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+
+        # Return the updated BasketItem
+        updated_serializer = self.get_serializer(self.instance)
+        return Response(updated_serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+class BasketItemRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
+    queryset = BasketItem.objects.all()
+    serializer_class = BasketItemCreateSerializer
+    lookup_field = "id"
+
 class UserBasketItemListAPIView(ListAPIView):
     def get_queryset(self):
         email = self.kwargs.get("email")
@@ -125,3 +159,23 @@ class OrderItemCreateAPIView(CreateAPIView):
     queryset = OrderItem.objects.all()
     serializer_class = OrderItemSerializer
 
+class ChatBotListAPIView(ListAPIView):
+    queryset = ChatBot.objects.all()
+    serializer_class = ChatBotSerializer
+
+class ChatBotRetrieveAPIView(RetrieveAPIView):
+    queryset = ChatBot.objects.all()
+    serializer_class = ChatBotSerializer
+    lookup_field = "id"
+
+
+
+
+from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
+from allauth.socialaccount.providers.oauth2.client import OAuth2Client
+from dj_rest_auth.registration.views import SocialLoginView
+
+class GoogleLogin(SocialLoginView):
+    adapter_class = GoogleOAuth2Adapter
+    callback_url = '/'
+    client_class = OAuth2Client

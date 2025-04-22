@@ -338,3 +338,14 @@ class OrderItem(models.Model):
 
     def __str__(self):
         return self.order.full_name + " " + self.product.name
+    
+
+class ChatBot(models.Model):
+    question = models.TextField()
+    answer = models.TextField()
+
+    class Meta:
+        ordering = ("-id",)
+
+    def __str__(self):
+        return self.question
