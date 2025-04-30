@@ -50,12 +50,12 @@ CORS_ALLOW_ALL_ORIGINS = True
 
 SITE_ID = 1
 
-REST_USE_JWT = True
+# REST_USE_JWT = True
 
-DJ_REST_AUTH = {
-    'USE_JWT': True,
-    'TOKEN_MODEL': None,
-}
+# DJ_REST_AUTH = {
+#     'USE_JWT': True,
+#     'TOKEN_MODEL': None,
+# }
 
 INSTALLED_APPS = [
     'modeltranslation',
@@ -85,17 +85,17 @@ INSTALLED_APPS = [
 
 ]
 
-REST_USE_JWT = True
+# REST_USE_JWT = True
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
     'allauth.account.auth_backends.AuthenticationBackend',
 )
 
-ACCOUNT_USER_MODEL_USERNAME_FIELD = None
-ACCOUNT_USERNAME_REQUIRED = False
-ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_AUTHENTICATION_METHOD = 'email'
+# ACCOUNT_USER_MODEL_USERNAME_FIELD = None
+# ACCOUNT_USERNAME_REQUIRED = False
+# ACCOUNT_EMAIL_REQUIRED = True
+# ACCOUNT_AUTHENTICATION_METHOD = 'email'
 
 
 
@@ -224,3 +224,5 @@ SIMPLE_JWT = {
 }
 
 
+
+SOCIALACCOUNT_LOGIN_ON_GET = True

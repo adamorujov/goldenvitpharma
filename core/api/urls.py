@@ -30,5 +30,5 @@ urlpatterns = [
     path('chatbot-list/', views.ChatBotListAPIView.as_view(), name="chatbot-list"),
     path('chatbot-retrieve/<int:id>/', views.ChatBotRetrieveAPIView.as_view(), name="chatbot-retrieve"),
 
-    path('auth/google/', views.GoogleLogin.as_view(), name='google_login'),
+    # path('auth/google/', views.GoogleLogin.as_view(), name='google_login'),
 ]

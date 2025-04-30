@@ -172,11 +172,80 @@ class ChatBotRetrieveAPIView(RetrieveAPIView):
 
 
 
-from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
-from allauth.socialaccount.providers.oauth2.client import OAuth2Client
-from dj_rest_auth.registration.views import SocialLoginView
+# from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
+# from allauth.socialaccount.providers.oauth2.client import OAuth2Client
+# from dj_rest_auth.registration.views import SocialLoginView
 
-class GoogleLogin(SocialLoginView):
-    adapter_class = GoogleOAuth2Adapter
-    callback_url = '/'
-    client_class = OAuth2Client
+# class GoogleLogin(SocialLoginView):
+#     adapter_class = GoogleOAuth2Adapter
+#     # callback_url = '/'
+#     # client_class = OAuth2Client
+
+
+import requests
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from django.conf import settings
+from dj_rest_auth.jwt_auth import get_refresh_view
+
+class GoogleLoginCallback(APIView):
+    def post(self, request):
+        code = request.data.get('code')
+        redirect_uri = request.data.get('redirect_uri')
+
+        if not code or not redirect_uri:
+            return Response({'error': 'Code and redirect_uri are required.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Step 1: Exchange code for access_token
+        token_url = 'https://oauth2.googleapis.com/token'
+
+        payload = {
+            'code': code,
+            'client_id': settings.SOCIAL_AUTH_GOOGLE_CLIENT_ID,
+            'client_secret': settings.SOCIAL_AUTH_GOOGLE_CLIENT_SECRET,
+            'redirect_uri': redirect_uri,
+            'grant_type': 'authorization_code',
+        }
+
+        token_response = requests.post(token_url, data=payload)
+        token_data = token_response.json()
+
+        if 'access_token' not in token_data:
+            return Response({'error': 'Failed to exchange code.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        access_token = token_data['access_token']
+
+        # Step 2: Get user info from Google
+        userinfo_response = requests.get(
+            'https://www.googleapis.com/oauth2/v1/userinfo',
+            params={'access_token': access_token}
+        )
+        userinfo = userinfo_response.json()
+
+        if 'email' not in userinfo:
+            return Response({'error': 'Failed to get user info.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Step 3: Find or create user in your DB
+        from django.contrib.auth import get_user_model
+        User = get_user_model()
+
+        try:
+            user = User.objects.get(email=userinfo['email'])
+        except User.DoesNotExist:
+            user = User.objects.create_user(
+                username=userinfo['email'],
+                email=userinfo['email'],
+                first_name=userinfo.get('given_name', ''),
+                last_name=userinfo.get('family_name', ''),
+                password=User.objects.make_random_password()
+            )
+
+        # Step 4: Issue JWT tokens
+        from rest_framework_simplejwt.tokens import RefreshToken
+        refresh = RefreshToken.for_user(user)
+
+        return Response({
+            'refresh': str(refresh),
+            'access': str(refresh.access_token),
+        })

@@ -97,6 +97,13 @@ class SiteSettings(models.Model):
     poster_text2 = models.TextField(blank=True, null=True)
     poster_image2 = models.ImageField(upload_to='core_images/', blank=True, null=True)
 
+    # about
+    who_we_are = models.TextField(blank=True, null=True)
+    image1 = models.ImageField(upload_to='core_images/', blank=True, null=True)
+    image2 = models.ImageField(upload_to='core_images/', blank=True, null=True)
+    our_goal = models.TextField(blank=True, null=True)
+
+
     # contact
     contact_email = models.EmailField(max_length=256, blank=True, null=True)
     contact_number = models.CharField(max_length=20, blank=True, null=True)

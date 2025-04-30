@@ -21,6 +21,9 @@ from django.conf.urls.static import static
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from django.conf.urls.i18n import i18n_patterns
 
+from core.api import views
+from core import views as core_views
+
 # from dj_rest_auth.views import LoginView
 # from dj_rest_auth.jwt_auth import get_refresh_view
 
@@ -34,24 +37,8 @@ urlpatterns = [
     path('api/core/', include('core.api.urls')),
     path('i18n/', include('django.conf.urls.i18n')),
 
-    # path('auth/', include('dj_rest_auth.urls')),  # login/logout/password reset
-    # path('auth/registration/', include('dj_rest_auth.registration.urls')),  # registration
-    # path('auth/social/', include('allauth.socialaccount.urls')),  # social login
-
     path('accounts/', include('allauth.urls')),
-
-    # path('auth/', include('dj_rest_auth.urls')),  # login/logout/password reset
-    # path('auth/registration/', include('dj_rest_auth.registration.urls')),  # registration
-    path('auth/social/', include('allauth.socialaccount.urls')),  # social login callbacks
-
-    path("auth/", include("dj_rest_auth.urls")),
-    path("auth/registration/", include("dj_rest_auth.registration.urls")),
-    # path("auth/social/", include("dj_rest_auth.social_urls")),
-
-    path("api/v1/auth/", include("dj_rest_auth.urls")),
-
-    # path('auth/login/', LoginView.as_view(), name='rest_login'),
-    # path('auth/token/refresh/', get_refresh_view().as_view(), name='token_refresh')
+    path('accounts/profile/', core_views.MyLoginView.as_view(), name='account_login'),
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
