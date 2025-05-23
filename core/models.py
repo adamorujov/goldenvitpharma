@@ -209,7 +209,7 @@ class SubCategory(models.Model):
         return self.title
 
 class Product(models.Model):
-    category = models.ForeignKey(SubCategory, on_delete=models.SET_NULL, related_name="products", blank=True, null=True)
+    category = models.ForeignKey(SubCategory, verbose_name=_("Category"), on_delete=models.SET_NULL, related_name="products", blank=True, null=True)
     code = models.CharField(max_length=50)
     name = models.CharField(max_length=300)
     description = HTMLField(blank=True, null=True)
@@ -225,6 +225,11 @@ class Product(models.Model):
 
     class Meta:
         ordering = ("-id",)
+
+    def save(self, *args, **kwargs):
+        discount_price = (self.price * self.discount_percentage) / 100
+        self.discount_price = self.price - round(discount_price, 2)
+        return super(Product, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.name
@@ -356,3 +361,30 @@ class ChatBot(models.Model):
 
     def __str__(self):
         return self.question
+
+
+class SocialMediaPost(models.Model):
+    image = models.ImageField(upload_to="social_images/")
+    title = models.CharField(max_length=250)
+    content = models.TextField(blank=True, null=True)
+    link = models.TextField(blank=True, null=True)
+
+    class Meta:
+        ordering = ("-id",)
+
+    def __str__(self):
+        return self.title
+    
+class Action(models.Model):
+    image = models.ImageField(upload_to="action_images/")
+    title = models.CharField(max_length=250)
+    content = HTMLField(blank=True, null=True)
+    start_date = models.DateField(blank=True, null=True)
+    end_date = models.DateField(blank=True, null=True)
+
+    class Meta:
+        ordering = ("-id",)
+
+    def __str__(self):
+        return self.title
+    

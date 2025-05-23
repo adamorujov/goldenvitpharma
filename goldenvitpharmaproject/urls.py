@@ -21,11 +21,6 @@ from django.conf.urls.static import static
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from django.conf.urls.i18n import i18n_patterns
 
-from core.api import views
-from core import views as core_views
-
-# from dj_rest_auth.views import LoginView
-# from dj_rest_auth.jwt_auth import get_refresh_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -36,9 +31,6 @@ urlpatterns = [
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('api/core/', include('core.api.urls')),
     path('i18n/', include('django.conf.urls.i18n')),
-
-    path('accounts/', include('allauth.urls')),
-    path('accounts/profile/', core_views.MyLoginView.as_view(), name='account_login'),
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

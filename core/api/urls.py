@@ -29,6 +29,7 @@ urlpatterns = [
     path('order-item-create/', views.OrderItemCreateAPIView.as_view(), name="order-item-create"),
     path('chatbot-list/', views.ChatBotListAPIView.as_view(), name="chatbot-list"),
     path('chatbot-retrieve/<int:id>/', views.ChatBotRetrieveAPIView.as_view(), name="chatbot-retrieve"),
-
-    # path('auth/google/', views.GoogleLogin.as_view(), name='google_login'),
+    path('socialmediapost-list/', views.SocialMediaPostListAPIView.as_view(), name="socialmediapost-list"),
+    path('action-list/', views.ActionListAPIView.as_view(), name="action-list"),
+    path('action-retrieve/<int:id>/', views.ActionRetrieveAPIView.as_view(), name="action-retrieve"),
 ]

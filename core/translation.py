@@ -5,7 +5,7 @@ from .models import (
 
 @register(SiteSettings)
 class SiteSettingsTranslationOptions(TranslationOptions):
-    fields = ('meta_description', 'meta_keywords', 'slogan', 'poster_title1', 'poster_text1', 'poster_title2', 'poster_text2')
+    fields = ('meta_description', 'meta_keywords', 'slogan', 'poster_title1', 'poster_text1', 'poster_title2', 'poster_text2', 'who_we_are', 'our_goal')
 
 @register(Banner)
 class BannerTranslationOptions(TranslationOptions):

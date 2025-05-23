@@ -1,13 +1,15 @@
 from rest_framework.generics import ListAPIView, CreateAPIView, RetrieveAPIView, RetrieveUpdateAPIView, DestroyAPIView, RetrieveUpdateDestroyAPIView
 from core.models import (
     CustomUser, SiteSettings, Banner, Service, Blog, Testimonial, Category, SubCategory, Product,
-    ProductImage, Comment, Favorite, Contact, Message, BasketItem, Promocode, Order, OrderItem, ChatBot
+    ProductImage, Comment, Favorite, Contact, Message, BasketItem, Promocode, Order, OrderItem, ChatBot,
+    SocialMediaPost, Action
 )
 from core.api.serializers import (
     UserCreateSerializer, UserSerializer, SiteSettingsSerializer, BannerSerializer, ServiceSerializer, BlogSerializer, 
     TestimonialSerializer, CategorySerializer, SubCategorySerializer, ProductSerializer,
     ProductImageSerializer, CommentSerializer, FavoriteSerializer, FavoriteCreateSerializer, ContactSerializer, MessageSerializer, 
-    BasketItemSerializer, BasketItemCreateSerializer, PromoCodeSerializer, OrderSerializer, OrderCreateSerializer, OrderItemSerializer, ChatBotSerializer
+    BasketItemSerializer, BasketItemCreateSerializer, PromoCodeSerializer, OrderSerializer, OrderCreateSerializer, 
+    OrderItemSerializer, ChatBotSerializer, SocialMediaPostSerializer, ActionSerializer
 )
 from core.api.permissions import IsOwner
 from rest_framework.permissions import IsAuthenticated
@@ -155,7 +157,6 @@ class OrderRetrieveUpdateAPIView(RetrieveUpdateAPIView):
     serializer_class = OrderCreateSerializer
     lookup_field = "id"
 
-
 class OrderItemCreateAPIView(CreateAPIView):
     queryset = OrderItem.objects.all()
     serializer_class = OrderItemSerializer
@@ -169,83 +170,15 @@ class ChatBotRetrieveAPIView(RetrieveAPIView):
     serializer_class = ChatBotSerializer
     lookup_field = "id"
 
+class SocialMediaPostListAPIView(ListAPIView):
+    queryset = SocialMediaPost.objects.all()
+    serializer_class = SocialMediaPostSerializer
 
+class ActionListAPIView(ListAPIView):
+    queryset = Action.objects.all()
+    serializer_class = ActionSerializer
 
-
-# from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
-# from allauth.socialaccount.providers.oauth2.client import OAuth2Client
-# from dj_rest_auth.registration.views import SocialLoginView
-
-# class GoogleLogin(SocialLoginView):
-#     adapter_class = GoogleOAuth2Adapter
-#     # callback_url = '/'
-#     # client_class = OAuth2Client
-
-
-import requests
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
-from django.conf import settings
-from dj_rest_auth.jwt_auth import get_refresh_view
-
-class GoogleLoginCallback(APIView):
-    def post(self, request):
-        code = request.data.get('code')
-        redirect_uri = request.data.get('redirect_uri')
-
-        if not code or not redirect_uri:
-            return Response({'error': 'Code and redirect_uri are required.'}, status=status.HTTP_400_BAD_REQUEST)
-
-        # Step 1: Exchange code for access_token
-        token_url = 'https://oauth2.googleapis.com/token'
-
-        payload = {
-            'code': code,
-            'client_id': settings.SOCIAL_AUTH_GOOGLE_CLIENT_ID,
-            'client_secret': settings.SOCIAL_AUTH_GOOGLE_CLIENT_SECRET,
-            'redirect_uri': redirect_uri,
-            'grant_type': 'authorization_code',
-        }
-
-        token_response = requests.post(token_url, data=payload)
-        token_data = token_response.json()
-
-        if 'access_token' not in token_data:
-            return Response({'error': 'Failed to exchange code.'}, status=status.HTTP_400_BAD_REQUEST)
-
-        access_token = token_data['access_token']
-
-        # Step 2: Get user info from Google
-        userinfo_response = requests.get(
-            'https://www.googleapis.com/oauth2/v1/userinfo',
-            params={'access_token': access_token}
-        )
-        userinfo = userinfo_response.json()
-
-        if 'email' not in userinfo:
-            return Response({'error': 'Failed to get user info.'}, status=status.HTTP_400_BAD_REQUEST)
-
-        # Step 3: Find or create user in your DB
-        from django.contrib.auth import get_user_model
-        User = get_user_model()
-
-        try:
-            user = User.objects.get(email=userinfo['email'])
-        except User.DoesNotExist:
-            user = User.objects.create_user(
-                username=userinfo['email'],
-                email=userinfo['email'],
-                first_name=userinfo.get('given_name', ''),
-                last_name=userinfo.get('family_name', ''),
-                password=User.objects.make_random_password()
-            )
-
-        # Step 4: Issue JWT tokens
-        from rest_framework_simplejwt.tokens import RefreshToken
-        refresh = RefreshToken.for_user(user)
-
-        return Response({
-            'refresh': str(refresh),
-            'access': str(refresh.access_token),
-        })
+class ActionRetrieveAPIView(RetrieveAPIView):
+    queryset = Action.objects.all()
+    serializer_class = ActionSerializer
+    lookup_field = "id"

@@ -20,3 +20,6 @@ msgstr ""
 #: .\core\models.py:68
 msgid "email address"
 msgstr ""
+
+msgid "category"
+msgstr "kateqoriya"
