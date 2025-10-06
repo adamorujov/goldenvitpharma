@@ -2,15 +2,21 @@ from django.contrib import admin
 from core.models import (
     CustomUser, SiteSettings, Banner, Service, BlogTag, Blog, Testimonial, Category, SubCategory, Product,
     ProductImage, Comment, Favorite, Contact, Message, BasketItem, Promocode, Order, OrderItem, ChatBot, 
-    SocialMediaPost, Action
+    Action, SocialMediaAccount, News
 )
 from django.contrib.auth.models import Group
 from modeltranslation.admin import TranslationAdmin
 
 
-admin.site.register(CustomUser)
-@admin.register(SiteSettings)
+@admin.register(CustomUser)
+class CustomUserAdmin(admin.ModelAdmin):
+    list_display = ("email", "first_name", "last_name")
+    search_fields = ("email",)
+    readonly_fields = ("email",)
+    
 
+
+@admin.register(SiteSettings)
 class SiteSettingsAdmin(TranslationAdmin):
     pass
 
@@ -57,5 +63,6 @@ admin.site.register(Order)
 admin.site.register(OrderItem)
 admin.site.unregister(Group)
 admin.site.register(ChatBot)
-admin.site.register(SocialMediaPost)
 admin.site.register(Action)
+admin.site.register(SocialMediaAccount)
+admin.site.register(News)

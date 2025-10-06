@@ -130,6 +130,7 @@ class Banner(models.Model):
 
     def __str__(self):
         return self.title
+
     
 class Service(models.Model):
     title = models.CharField(max_length=300)
@@ -218,6 +219,8 @@ class Product(models.Model):
     discount_price = models.FloatField(default=0)
     is_stock = models.BooleanField(default=True)
     is_bestseller = models.BooleanField(default=False)
+    soon_in_stock = models.BooleanField(default=False)
+    nearest_pharmacy = models.TextField()
 
     # meta
     meta_description = models.TextField(blank=True, null=True)
@@ -363,17 +366,30 @@ class ChatBot(models.Model):
         return self.question
 
 
-class SocialMediaPost(models.Model):
+class News(models.Model):
     image = models.ImageField(upload_to="social_images/")
     title = models.CharField(max_length=250)
     content = models.TextField(blank=True, null=True)
-    link = models.TextField(blank=True, null=True)
+    date = models.DateField(default=timezone.now)
+    time = models.TimeField(default=timezone.now)
 
     class Meta:
         ordering = ("-id",)
 
     def __str__(self):
         return self.title
+    
+# class SocialMediaPost(models.Model):
+#     image = models.ImageField(upload_to="social_images/")
+#     title = models.CharField(max_length=250)
+#     content = models.TextField(blank=True, null=True)
+#     link = models.TextField(blank=True, null=True)
+
+#     class Meta:
+#         ordering = ("-id",)
+
+#     def __str__(self):
+#         return self.title
     
 class Action(models.Model):
     image = models.ImageField(upload_to="action_images/")
@@ -388,3 +404,13 @@ class Action(models.Model):
     def __str__(self):
         return self.title
     
+class SocialMediaAccount(models.Model):
+    name = models.CharField(max_length=50)
+    icon = models.TextField()
+    link = models.TextField()
+
+    class Meta:
+        ordering = ("-id",)
+
+    def __str__(self):
+        return self.name

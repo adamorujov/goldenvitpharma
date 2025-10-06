@@ -29,7 +29,8 @@ urlpatterns = [
     path('order-item-create/', views.OrderItemCreateAPIView.as_view(), name="order-item-create"),
     path('chatbot-list/', views.ChatBotListAPIView.as_view(), name="chatbot-list"),
     path('chatbot-retrieve/<int:id>/', views.ChatBotRetrieveAPIView.as_view(), name="chatbot-retrieve"),
-    path('socialmediapost-list/', views.SocialMediaPostListAPIView.as_view(), name="socialmediapost-list"),
+    path('news-list/', views.NewsListAPIView.as_view(), name="news-list"),
     path('action-list/', views.ActionListAPIView.as_view(), name="action-list"),
     path('action-retrieve/<int:id>/', views.ActionRetrieveAPIView.as_view(), name="action-retrieve"),
+    path('socialmedia-list/', views.SocialMediaAccountListAPIView.as_view(), name="socialmedia-list"),
 ]

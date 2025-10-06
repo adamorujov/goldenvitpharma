@@ -2,14 +2,14 @@ from rest_framework.generics import ListAPIView, CreateAPIView, RetrieveAPIView,
 from core.models import (
     CustomUser, SiteSettings, Banner, Service, Blog, Testimonial, Category, SubCategory, Product,
     ProductImage, Comment, Favorite, Contact, Message, BasketItem, Promocode, Order, OrderItem, ChatBot,
-    SocialMediaPost, Action
+    Action, SocialMediaAccount, News
 )
 from core.api.serializers import (
     UserCreateSerializer, UserSerializer, SiteSettingsSerializer, BannerSerializer, ServiceSerializer, BlogSerializer, 
     TestimonialSerializer, CategorySerializer, SubCategorySerializer, ProductSerializer,
     ProductImageSerializer, CommentSerializer, FavoriteSerializer, FavoriteCreateSerializer, ContactSerializer, MessageSerializer, 
     BasketItemSerializer, BasketItemCreateSerializer, PromoCodeSerializer, OrderSerializer, OrderCreateSerializer, 
-    OrderItemSerializer, ChatBotSerializer, SocialMediaPostSerializer, ActionSerializer
+    OrderItemSerializer, ChatBotSerializer, ActionSerializer, SocialMediaAccountSerializer, NewsSerializer
 )
 from core.api.permissions import IsOwner
 from rest_framework.permissions import IsAuthenticated
@@ -170,9 +170,9 @@ class ChatBotRetrieveAPIView(RetrieveAPIView):
     serializer_class = ChatBotSerializer
     lookup_field = "id"
 
-class SocialMediaPostListAPIView(ListAPIView):
-    queryset = SocialMediaPost.objects.all()
-    serializer_class = SocialMediaPostSerializer
+class NewsListAPIView(ListAPIView):
+    queryset = News.objects.all()
+    serializer_class = NewsSerializer
 
 class ActionListAPIView(ListAPIView):
     queryset = Action.objects.all()
@@ -182,3 +182,7 @@ class ActionRetrieveAPIView(RetrieveAPIView):
     queryset = Action.objects.all()
     serializer_class = ActionSerializer
     lookup_field = "id"
+
+class SocialMediaAccountListAPIView(ListAPIView):
+    queryset = SocialMediaAccount.objects.all()
+    serializer_class = SocialMediaAccountSerializer

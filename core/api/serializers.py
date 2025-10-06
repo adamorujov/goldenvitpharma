@@ -2,7 +2,7 @@ from rest_framework import serializers
 from core.models import (
     CustomUser, SiteSettings, Banner, Service, Blog, Testimonial, Category, SubCategory, Product,
     ProductImage, Comment, Favorite, Contact, Message, BasketItem, Promocode, Order, OrderItem, ChatBot,
-    SocialMediaPost, Action
+    Action, SocialMediaAccount, News
 )
 from django.contrib.auth.password_validation import validate_password
 
@@ -150,13 +150,17 @@ class ChatBotSerializer(serializers.ModelSerializer):
         model = ChatBot
         fields = "__all__"
 
-class SocialMediaPostSerializer(serializers.ModelSerializer):
+class NewsSerializer(serializers.ModelSerializer):
     class Meta:
-        model = SocialMediaPost
+        model = News
         fields = "__all__"
 
 class ActionSerializer(serializers.ModelSerializer):
     class Meta:
-        model =  Action
+        model = Action
         fields = "__all__"
 
+class SocialMediaAccountSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SocialMediaAccount
+        fields = "__all__"

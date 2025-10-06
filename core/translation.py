@@ -1,6 +1,6 @@
 from modeltranslation.translator import register, TranslationOptions
 from .models import (
-    SiteSettings, Banner, Service, BlogTag, Blog, Testimonial, Category, SubCategory, Product
+    SiteSettings, Banner, Service, BlogTag, Blog, Testimonial, Category, SubCategory, Product, News, Action, CustomUser
 )
 
 @register(SiteSettings)
@@ -38,3 +38,11 @@ class SubCategoryTranslationOptions(TranslationOptions):
 @register(Product)
 class ProductTranslationOptions(TranslationOptions):
     fields = ('name', 'description', 'meta_description', 'meta_keywords')
+
+@register(News)
+class NewsTranslationOptions(TranslationOptions):
+    fields = ('title', 'content')
+
+@register(Action)
+class ActionTranslationOptions(TranslationOptions):
+    fields = ('title', 'content')
