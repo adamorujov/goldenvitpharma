@@ -208,6 +208,18 @@ class SubCategory(models.Model):
 
     def __str__(self):
         return self.title
+    
+class Pharmacy(models.Model):
+    name = models.CharField(max_length=200)
+    address = models.TextField()
+
+    class Meta:
+        verbose_name = "pharmacy"
+        verbose_name_plural = "Pharmacies"
+        ordering = ("-id",)
+
+    def __str__(self):
+        return self.name
 
 class Product(models.Model):
     category = models.ForeignKey(SubCategory, verbose_name=_("Category"), on_delete=models.SET_NULL, related_name="products", blank=True, null=True)
@@ -220,7 +232,7 @@ class Product(models.Model):
     is_stock = models.BooleanField(default=True)
     is_bestseller = models.BooleanField(default=False)
     soon_in_stock = models.BooleanField(default=False)
-    nearest_pharmacy = models.TextField()
+    pharmacies = models.ManyToManyField(Pharmacy, related_name="products")
 
     # meta
     meta_description = models.TextField(blank=True, null=True)

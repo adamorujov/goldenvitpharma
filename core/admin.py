@@ -2,7 +2,7 @@ from django.contrib import admin
 from core.models import (
     CustomUser, SiteSettings, Banner, Service, BlogTag, Blog, Testimonial, Category, SubCategory, Product,
     ProductImage, Comment, Favorite, Contact, Message, BasketItem, Promocode, Order, OrderItem, ChatBot, 
-    Action, SocialMediaAccount, News
+    Action, SocialMediaAccount, News, Pharmacy
 )
 from django.contrib.auth.models import Group
 from modeltranslation.admin import TranslationAdmin
@@ -51,6 +51,11 @@ class SubCategoryAdmin(TranslationAdmin):
 @admin.register(Product)
 class ProductAdmin(TranslationAdmin):
     pass
+
+@admin.register(Pharmacy)
+class PharmacyAdmin(TranslationAdmin):
+    pass
+
 
 admin.site.register(ProductImage)
 admin.site.register(Comment)

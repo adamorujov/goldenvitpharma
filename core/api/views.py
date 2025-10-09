@@ -2,14 +2,14 @@ from rest_framework.generics import ListAPIView, CreateAPIView, RetrieveAPIView,
 from core.models import (
     CustomUser, SiteSettings, Banner, Service, Blog, Testimonial, Category, SubCategory, Product,
     ProductImage, Comment, Favorite, Contact, Message, BasketItem, Promocode, Order, OrderItem, ChatBot,
-    Action, SocialMediaAccount, News
+    Action, SocialMediaAccount, News, Pharmacy
 )
 from core.api.serializers import (
     UserCreateSerializer, UserSerializer, SiteSettingsSerializer, BannerSerializer, ServiceSerializer, BlogSerializer, 
     TestimonialSerializer, CategorySerializer, SubCategorySerializer, ProductSerializer,
     ProductImageSerializer, CommentSerializer, FavoriteSerializer, FavoriteCreateSerializer, ContactSerializer, MessageSerializer, 
     BasketItemSerializer, BasketItemCreateSerializer, PromoCodeSerializer, OrderSerializer, OrderCreateSerializer, 
-    OrderItemSerializer, ChatBotSerializer, ActionSerializer, SocialMediaAccountSerializer, NewsSerializer
+    OrderItemSerializer, ChatBotSerializer, ActionSerializer, SocialMediaAccountSerializer, NewsSerializer, PharmacySerializer
 )
 from core.api.permissions import IsOwner
 from rest_framework.permissions import IsAuthenticated
@@ -53,6 +53,10 @@ class TestimonialListAPIView(ListAPIView):
 class CategoryListAPIView(ListAPIView):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
+
+class PharmacyListAPIView(ListAPIView):
+    queryset = Pharmacy.objects.all()
+    serializer_class = PharmacySerializer
 
 class ProductListAPIView(ListAPIView):
     queryset = Product.objects.all()

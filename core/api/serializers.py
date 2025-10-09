@@ -2,7 +2,7 @@ from rest_framework import serializers
 from core.models import (
     CustomUser, SiteSettings, Banner, Service, Blog, Testimonial, Category, SubCategory, Product,
     ProductImage, Comment, Favorite, Contact, Message, BasketItem, Promocode, Order, OrderItem, ChatBot,
-    Action, SocialMediaAccount, News
+    Action, SocialMediaAccount, News, Pharmacy
 )
 from django.contrib.auth.password_validation import validate_password
 
@@ -82,10 +82,16 @@ class CommentSerializer(serializers.ModelSerializer):
         model = Comment
         fields = "__all__"
 
+class PharmacySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Pharmacy
+        fields = "__all__"
+
 class ProductSerializer(serializers.ModelSerializer):
     category = serializers.SlugRelatedField(queryset=Category.objects.all(), slug_field='title')
     images = ProductImageSerializer(many=True)
     product_comments = CommentSerializer(many=True)
+    pharmacies = PharmacySerializer(many=True)
     class Meta:
         model = Product
         fields = "__all__"

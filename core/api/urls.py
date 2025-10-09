@@ -33,4 +33,5 @@ urlpatterns = [
     path('action-list/', views.ActionListAPIView.as_view(), name="action-list"),
     path('action-retrieve/<int:id>/', views.ActionRetrieveAPIView.as_view(), name="action-retrieve"),
     path('socialmedia-list/', views.SocialMediaAccountListAPIView.as_view(), name="socialmedia-list"),
+    path('pharmacy-list/', views.PharmacyListAPIView.as_view(), name="pharmacy-list"),
 ]
