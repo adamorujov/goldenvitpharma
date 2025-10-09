@@ -178,6 +178,11 @@ class NewsListAPIView(ListAPIView):
     queryset = News.objects.all()
     serializer_class = NewsSerializer
 
+class NewsRetrieveAPIView(RetrieveAPIView):
+    queryset = News.objects.all()
+    serializer_class = NewsSerializer
+    lookup_field = "id"
+
 class ActionListAPIView(ListAPIView):
     queryset = Action.objects.all()
     serializer_class = ActionSerializer

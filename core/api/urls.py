@@ -30,6 +30,7 @@ urlpatterns = [
     path('chatbot-list/', views.ChatBotListAPIView.as_view(), name="chatbot-list"),
     path('chatbot-retrieve/<int:id>/', views.ChatBotRetrieveAPIView.as_view(), name="chatbot-retrieve"),
     path('news-list/', views.NewsListAPIView.as_view(), name="news-list"),
+    path('news-retrieve/<int:id>/', views.NewsRetrieveAPIView.as_view(), name="news-retrieve"),
     path('action-list/', views.ActionListAPIView.as_view(), name="action-list"),
     path('action-retrieve/<int:id>/', views.ActionRetrieveAPIView.as_view(), name="action-retrieve"),
     path('socialmedia-list/', views.SocialMediaAccountListAPIView.as_view(), name="socialmedia-list"),
