@@ -123,7 +123,7 @@ class SiteSettings(models.Model):
 
 class Banner(models.Model):
     title = models.CharField(max_length=300)
-    image = models.ImageField(upload_to="core_images/")
+    image = models.ImageField(upload_to="core_images/", blank=True, null=True)
     background_image = models.ImageField(upload_to="core_images/")
 
     class Meta:
