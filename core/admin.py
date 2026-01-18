@@ -2,7 +2,7 @@ from django.contrib import admin
 from core.models import (
     CustomUser, SiteSettings, Banner, Service, BlogTag, Blog, Testimonial, Category, SubCategory, Product,
     ProductImage, Comment, Favorite, Contact, Message, BasketItem, Promocode, Order, OrderItem, ChatBot, 
-    Action, SocialMediaAccount, News, Pharmacy
+    Action, SocialMediaAccount, News, Pharmacy, KapitalOrder
 )
 from django.contrib.auth.models import Group
 from modeltranslation.admin import TranslationAdmin
@@ -71,3 +71,4 @@ admin.site.register(ChatBot)
 admin.site.register(Action)
 admin.site.register(SocialMediaAccount)
 admin.site.register(News)
+admin.site.register(KapitalOrder)

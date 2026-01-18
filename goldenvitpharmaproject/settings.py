@@ -188,3 +188,7 @@ SIMPLE_JWT = {
     # 'AUTH_HEADER_TYPES': ('Bearer',),
     'AUTH_HEADER_TYPES': ('JWT',),
 }
+
+KAPITAL_BASE_URL = "https://txpgtst.kapitalbank.az/api"
+KAPITAL_USERNAME = "TerminalSys/kapital"
+KAPITAL_PASSWORD = "kapital123"

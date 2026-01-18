@@ -195,3 +195,73 @@ class ActionRetrieveAPIView(RetrieveAPIView):
 class SocialMediaAccountListAPIView(ListAPIView):
     queryset = SocialMediaAccount.objects.all()
     serializer_class = SocialMediaAccountSerializer
+
+
+
+####-------------------PAYMENT---------------------
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from .services import create_order, get_order
+from .utils import is_payment_success, normalize_status
+from core.models import KapitalOrder
+
+
+class CreatePayment(APIView):
+    def post(self, request):
+        data = create_order(request.data)
+        order = data.get("order")
+
+        redirect_url = None
+        if order:
+            redirect_url = f"{order['hppUrl']}/flex?id={order['id']}&password={order['password']}"
+
+        KapitalOrder.objects.create(
+            order_id = order['id'],
+            password = order['password'],
+            status = order['status']
+        )
+
+        return Response({
+            "kapital": data,
+            "redirect_url": redirect_url
+        })
+
+
+class PaymentCallback(APIView):
+    def get(self, request):
+        return Response({
+            "received": request.GET
+        })
+
+
+class PaymentStatus(APIView):
+    def get(self, request, order_id):
+        password = request.query_params.get("password")
+
+        data = get_order(order_id, password, detailed=True)
+
+        order = data.get("order", {})
+
+        return Response({
+            "order_id": order_id,
+            "raw_status": order.get("status"),
+            "status": normalize_status(order.get("status", "")),
+            "success": is_payment_success(order),
+            "full_response": data
+        })
+    
+
+from django.shortcuts import redirect
+from rest_framework.decorators import api_view
+
+@api_view(["GET"])
+def pay_redirect(request, order_id):
+    try:
+        order = KapitalOrder.objects.get(order_id=order_id)
+    except:
+        return Response({"error": "Order not found"}, status=404)
+
+    redirect_url = f"https://txpgtst.birbank.az/flex/flex?id={order.order_id}&password={order.password}"
+
+    return redirect(redirect_url)
