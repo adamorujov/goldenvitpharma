@@ -1,62 +1,69 @@
 import requests
+import base64
 from django.conf import settings
-from requests.auth import HTTPBasicAuth
-
-HEADERS = {
-    "Content-Type": "application/json",
-    "Accept": "application/json",
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
-}
-
-def auth():
-    return HTTPBasicAuth(settings.KAPITAL_USERNAME, settings.KAPITAL_PASSWORD)
 
 
-def create_order(order_data):
-    url = f"{settings.KAPITAL_BASE_URL}/order/"
+class KapitalService:
 
-    response = requests.post(
-        url,
-        json={"order": order_data},
-        headers=HEADERS,
-        auth=auth(),
-        timeout=30
-    )
+    def __init__(self):
+        self.base_url = settings.KAPITAL["BASE_URL"]
 
-    try:
-        return response.json()
-    except:
-        return {
-            "error": "Cloudflare block or invalid response",
-            "status_code": response.status_code,
-            "raw_response": response.text[:500]
+        credentials = f'{settings.KAPITAL["USERNAME"]}:{settings.KAPITAL["PASSWORD"]}'
+        encoded = base64.b64encode(credentials.encode()).decode()
+
+        self.headers = {
+            "Authorization": f"Basic {encoded}",
+            "Content-Type": "application/json"
         }
 
-def get_order(order_id, password=None, detailed=False):
-    url = f"{settings.KAPITAL_BASE_URL}/order/{order_id}"
+    # -----------------------
+    # CREATE ORDER (Purchase)
+    # -----------------------
+    def create_order(self, amount, description="Payment", currency="AZN"):
+        url = f"{self.base_url}/order"
 
-    params = {}
-    if detailed:
-        params = {
-            "password": password,
-            "tranDetailLevel": 2,
-            "tokenDetailLevel": 2,
-            "orderDetailLevel": 2
+        print(self.headers)
+
+        payload = {
+            "amount": float(amount),
+            "currency": currency,
+            "description": description,
+            "language": "az",
+            "hppRedirectUrl": settings.KAPITAL["CALLBACK_URL"],
+            "typeRid": "Order_SMS",
+            "hppCofCapturePurposes": [
+                "Cit"
+            ]
         }
 
-    response = requests.get(
-        url,
-        headers=HEADERS,
-        auth=auth(),
-        params=params,
-        timeout=30
-    )
+        r = requests.post(url, json=payload, headers=self.headers)
+        r.raise_for_status()
+        return r.json()
 
-    try:
-        return response.json()
-    except:
-        return {
-            "error": "Cloudflare block or invalid response",
-            "status_code": response.status_code,
-            "raw_response": response.text[:500]
-        }
+    # -----------------------
+    # ORDER DETAILS
+    # -----------------------
+    def get_order(self, order_id):
+        url = f"{self.base_url}/order/{order_id}"
+        r = requests.get(url, headers=self.headers)
+        r.raise_for_status()
+        return r.json()
+
+    # -----------------------
+    # DETAILED ORDER
+    # -----------------------
+    def get_order_detailed(self, order_id):
+        url = (
+            f"{self.base_url}/order/{order_id}"
+            "?tranDetailLevel=2&tokenDetailLevel=2&orderDetailLevel=2"
+        )
+        r = requests.get(url, headers=self.headers)
+        r.raise_for_status()
+        return r.json()
+
+    # -----------------------
+    # REDIRECT URL
+    # -----------------------
+    @staticmethod
+    def build_redirect_url(hpp_url, order_id, password):
+        return f"{hpp_url}/flex?id={order_id}&password={password}"

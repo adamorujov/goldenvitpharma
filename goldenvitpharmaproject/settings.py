@@ -189,6 +189,9 @@ SIMPLE_JWT = {
     'AUTH_HEADER_TYPES': ('JWT',),
 }
 
-KAPITAL_BASE_URL = "https://txpgtst.kapitalbank.az/api"
-KAPITAL_USERNAME = "TerminalSys/kapital"
-KAPITAL_PASSWORD = "kapital123"
+KAPITAL = {
+    "BASE_URL": "https://txpgtst.kapitalbank.az/api",  # prod-da dəyiş
+    "USERNAME": "TerminalSys/kapital",
+    "PASSWORD": "kapital123",
+    "CALLBACK_URL": "https://goldenvitpharma.com/api/payments/kapital/callback/",
+}

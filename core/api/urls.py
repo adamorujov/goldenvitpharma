@@ -36,9 +36,6 @@ urlpatterns = [
     path('socialmedia-list/', views.SocialMediaAccountListAPIView.as_view(), name="socialmedia-list"),
     path('pharmacy-list/', views.PharmacyListAPIView.as_view(), name="pharmacy-list"),
 
-    path("create/", views.CreatePayment.as_view()),
-    path("callback/", views.PaymentCallback.as_view()),
-    path("status/<int:order_id>/", views.PaymentStatus.as_view()),
-
-    path("pay/<int:order_id>/", views.pay_redirect)
+    path("create/", views.CreateKapitalPayment.as_view()),
+    path("kapital/callback/", views.KapitalCallback.as_view()),
 ]

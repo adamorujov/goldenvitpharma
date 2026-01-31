@@ -430,6 +430,28 @@ class SocialMediaAccount(models.Model):
     
 
 class KapitalOrder(models.Model):
-    order_id = models.IntegerField(unique=True)
-    password = models.CharField(max_length=100)
-    status = models.CharField(max_length=50)
+    STATUS_CHOICES = [
+        ("CREATED", "Created"),
+        ("REDIRECTED", "Redirected"),
+        ("PAID", "Paid"),
+        ("FAILED", "Failed"),
+        ("REFUNDED", "Refunded"),
+    ]
+
+    order_id = models.CharField(max_length=64, unique=True)
+    password = models.CharField(max_length=128, blank=True, null=True)
+
+    amount = models.DecimalField(max_digits=12, decimal_places=2)
+    currency = models.CharField(max_length=8, default="AZN")
+
+    description = models.CharField(max_length=255, blank=True)
+
+    status = models.CharField(max_length=32, default="CREATED")
+
+    raw_response = models.JSONField(blank=True, null=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def is_paid(self):
+        return self.status in ["Fully paid", "FullyPaid", "PAID"]

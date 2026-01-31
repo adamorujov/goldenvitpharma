@@ -171,10 +171,7 @@ class SocialMediaAccountSerializer(serializers.ModelSerializer):
         model = SocialMediaAccount
         fields = "__all__"
 
-class NewOrderSerializer(serializers.Serializer):
-    typeRid = serializers.CharField()
-    amount = serializers.CharField()
-    currency = serializers.CharField()
-    language = serializers.CharField()
-    description = serializers.CharField(required=False)
-    hppRedirectUrl = serializers.URLField(required=False)
+
+class CreatePaymentSerializer(serializers.Serializer):
+    amount = serializers.DecimalField(max_digits=12, decimal_places=2)
+    description = serializers.CharField()

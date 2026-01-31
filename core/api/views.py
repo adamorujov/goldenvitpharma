@@ -199,69 +199,71 @@ class SocialMediaAccountListAPIView(ListAPIView):
 
 
 ####-------------------PAYMENT---------------------
-
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .services import create_order, get_order
-from .utils import is_payment_success, normalize_status
+from django.shortcuts import redirect, get_object_or_404
+
+from .services import KapitalService
 from core.models import KapitalOrder
+from .serializers import CreatePaymentSerializer
 
 
-class CreatePayment(APIView):
+class CreateKapitalPayment(APIView):
+
     def post(self, request):
-        data = create_order(request.data)
-        order = data.get("order")
+        serializer = CreatePaymentSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
 
-        redirect_url = None
-        if order:
-            redirect_url = f"{order['hppUrl']}/flex?id={order['id']}&password={order['password']}"
+        service = KapitalService()
 
-        KapitalOrder.objects.create(
-            order_id = order['id'],
-            password = order['password'],
-            status = order['status']
+        res = service.create_order(
+            amount=serializer.validated_data["amount"],
+            description=serializer.validated_data["description"]
+        )
+
+        order = res["order"]
+
+        db_order = KapitalOrder.objects.create(
+            order_id=order["id"],
+            password=order["password"],
+            amount=serializer.validated_data["amount"],
+            raw_response=res
+        )
+
+        redirect_url = service.build_redirect_url(
+            order["hppUrl"],
+            order["id"],
+            order["password"]
         )
 
         return Response({
-            "kapital": data,
             "redirect_url": redirect_url
-        })
-
-
-class PaymentCallback(APIView):
-    def get(self, request):
-        return Response({
-            "received": request.GET
-        })
-
-
-class PaymentStatus(APIView):
-    def get(self, request, order_id):
-        password = request.query_params.get("password")
-
-        data = get_order(order_id, password, detailed=True)
-
-        order = data.get("order", {})
-
-        return Response({
-            "order_id": order_id,
-            "raw_status": order.get("status"),
-            "status": normalize_status(order.get("status", "")),
-            "success": is_payment_success(order),
-            "full_response": data
         })
     
 
+from rest_framework.views import APIView
 from django.shortcuts import redirect
-from rest_framework.decorators import api_view
+from core.models import KapitalOrder
+from .services import KapitalService
 
-@api_view(["GET"])
-def pay_redirect(request, order_id):
-    try:
+
+class KapitalCallback(APIView):
+
+    def get(self, request):
+        order_id = request.GET.get("ID")
+
         order = KapitalOrder.objects.get(order_id=order_id)
-    except:
-        return Response({"error": "Order not found"}, status=404)
 
-    redirect_url = f"https://txpgtst.birbank.az/flex/flex?id={order.order_id}&password={order.password}"
+        service = KapitalService()
+        data = service.get_order(order_id)
 
-    return redirect(redirect_url)
+        real_status = data["order"]["status"]
+
+        order.status = real_status
+        order.raw_response = data
+        order.save()
+
+        if real_status in ["Fully paid", "FullyPaid"]:
+            return redirect("/payment-success")
+        else:
+            return redirect("/payment-fail")
